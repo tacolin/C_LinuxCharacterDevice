@@ -14,16 +14,16 @@ int main( int argc, char* argv[])
 
 	if ( 2 > argc )
 	{
-		printf(RED "[taco-error] input parameters are not enough\n" NONE);
+		printf(RED "[USER-PART-ERROR] input parameters are not enough\n" NONE);
 		goto _HINT;
 	}
 
 	fd = open("/dev/tacobuf", O_RDWR);
 	if ( fd < 0 )
 	{
-		printf(RED "[taco-error] open device tacobuf failed\n" NONE);
-		printf(GREEN "[taco] 1) maybe you should insert kernel module first\n" NONE);
-		printf(GREEN "[taco] 2) maybe you should use sudo to execute this program\n" NONE);
+		printf(RED "[USER-PART-ERROR] open device tacobuf failed\n" NONE);
+		printf(GREEN "[USER-PART] 1) maybe you should insert kernel module first\n" NONE);
+		printf(GREEN "[USER-PART] 2) maybe you should use sudo to execute this program\n" NONE);
 		return -1;
 	}
 
@@ -35,22 +35,22 @@ int main( int argc, char* argv[])
 
 		if ( 0 > read(fd, _ubuf, 128) )
 		{
-			printf(RED "[taco-error] read data from tacobuf failed\n" NONE);
+			printf(RED "[USER-PART-ERROR] read data from tacobuf failed\n" NONE);
 			close(fd);
 			return -1;			
 		}		
 		
-		printf(YELLOW "[taco] read data : %s\n" NONE, _ubuf);
+		printf(YELLOW "[USER-PART] read data : %s\n" NONE, _ubuf);
 	}
 	else if ( 0 == strcmp( argv[1], "unlock" ) )
 	{
 		if ( 0 > write(fd, "ok", strlen("ok")+1 ) )
 		{
-			printf(RED "[taco-error] write data to tacobuf failed\n" NONE);
+			printf(RED "[USER-PART-ERROR] write data to tacobuf failed\n" NONE);
 			close(fd);
 			return -1;
 		}
-		printf(YELLOW "[taco] unlock kernel\n" NONE);
+		printf(YELLOW "[USER-PART] unlock kernel\n" NONE);
 	}
 	else
 	{
@@ -61,9 +61,9 @@ int main( int argc, char* argv[])
 	return 0;
 
 _HINT:
-	printf(GREEN "[taco] action should be 'read' or 'unlock'\n" NONE );
-	printf(GREEN "[taco] sudo ./main read\n" NONE );
-	printf(GREEN "[taco] sudo ./main unlock\n" NONE );
+	printf(GREEN "[USER-PART] action should be 'read' or 'unlock'\n" NONE );
+	printf(GREEN "[USER-PART] sudo ./main read\n" NONE );
+	printf(GREEN "[USER-PART] sudo ./main unlock\n" NONE );
 	close(fd);
 	return -1;
 }

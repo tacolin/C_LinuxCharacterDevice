@@ -32,7 +32,7 @@ static int _device_open(struct inode* p_node, struct file* p_file)
 {
 	if ( 0 == try_module_get( THIS_MODULE ) )
 	{
-		printk("[taco-error] try module get failed\n");
+		printk("[KERNEL-PART-ERROR] try module get failed\n");
 		return -1;
 	}
 
@@ -49,7 +49,7 @@ static ssize_t _device_write(struct file* p_file, const char* p_data, size_t cou
 {
 	wake_up_interruptible( &_wq );
 
-	printk("[taco] %s\n", __func__);
+	printk("[KERNEL-PART] %s\n", __func__);
 
 	return count;
 }
@@ -58,13 +58,13 @@ static ssize_t _device_read(struct file* p_file, char *p_buf, size_t len, loff_t
 {
 	size_t read_len = min( (size_t)128, len );
 
-	printk("[taco] %s\n", __func__);
+	printk("[KERNEL-PART] %s\n", __func__);
 
 	interruptible_sleep_on( &_wq );
 
 	if ( 0 > copy_to_user( p_buf, _kbuf, read_len ) )
 	{
-		printk("[taco-error] copy to user failed\n");
+		printk("[KERNEL-PART-ERROR] copy to user failed\n");
 		return -EFAULT;
 	}
 	
@@ -81,17 +81,17 @@ int register_device(int major, int minor)
 	if ( !MAJOR(device_number) )
 	{
 		ret = alloc_chrdev_region( &device_number, MINOR(device_number), 1, "tacobuf");
-		printk("[taco] alloc_chrdev_region\n");
+		printk("[KERNEL-PART] alloc_chrdev_region\n");
 	}
 	else
 	{
 		ret = register_chrdev_region(device_number, 1, "tacobuf");
-		printk("[taco] register_chrdev_region\n");
+		printk("[KERNEL-PART] register_chrdev_region\n");
 	}
 
 	if ( ret < 0 )
 	{
-		printk("[taco-error] register device failed\n");
+		printk("[KERNEL-PART-ERROR] register device failed\n");
 		return ret;
 	}
 
@@ -108,21 +108,21 @@ int register_device(int major, int minor)
 	if ( ret != 0 )
 	{
 		unregister_chrdev_region( device_number, 1 );
-		printk("[taco-error] add device failed\n");
+		printk("[KERNEL-PART-ERROR] add device failed\n");
 		return ret;
 	}
 	
 	_p_class = class_create(THIS_MODULE, "taco_class");
 	if ( _p_class == NULL )
 	{
-		printk("[taco-error] class create failed\n");
+		printk("[KERNEL-PART-ERROR] class create failed\n");
 		unregister_chrdev_region( device_number, 1 );
 		return -1;
 	}
 
 	if ( NULL == device_create(_p_class, NULL, device_number, NULL, "tacobuf") )
 	{
-		printk("[taco-error] device create failed\n");
+		printk("[KERNEL-PART-ERROR] device create failed\n");
 		unregister_chrdev_region( device_number, 1 );
 		return -1;
 	}

@@ -4,7 +4,7 @@
 #include <linux/init.h>
 
 MODULE_AUTHOR("tacolin");
-MODULE_DESCRIPTION("WAIT QUEUE KERNEL TEST MODULE");
+MODULE_DESCRIPTION("CHARACTOR DEVICEL TEST MODULE 2");
 MODULE_LICENSE("GPL");
 
 extern int register_device(int major, int minor);
@@ -12,10 +12,10 @@ extern int unregister_device(int major, int minor);
 
 static int __init kernel_module_init(void)
 {
-	printk("[taco] %s\n", __func__);
+	printk("[KERNEL-PART] %s\n", __func__);
 	if ( 0 > register_device(125, 0) )
 	{
-		printk("[taco-error] register device failed\n");
+		printk("[KERNEL-PART-ERROR] register device failed\n");
 		return -1;
 	}
     return 0;
@@ -23,10 +23,10 @@ static int __init kernel_module_init(void)
 
 static void __exit kernel_module_exit(void)
 {
-	printk("[taco] %s\n", __func__);
+	printk("[KERNEL-PART] %s\n", __func__);
 	if ( 0 > unregister_device(125, 0) )
 	{
-		printk("[taco-error] unregister device failed\n");
+		printk("[KERNEL-PART-ERROR] unregister device failed\n");
 		return;
 	}
 	return;
